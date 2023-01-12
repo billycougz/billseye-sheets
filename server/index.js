@@ -46,6 +46,8 @@ app.get('/create', async (req, res) => {
 	const doc = new GoogleSpreadsheet();
 	doc.useOAuth2Client(oauth2Client);
 	await doc.createNewSpreadsheetDocument({ title: req.query.title });
+	await doc.sheetsByIndex[0].setHeaderRow(['date', 'winner', 'loser']);
+	await doc.sheetsByIndex[0].addRow(['1/11/2023', 'billy', 'kara']);
 	res.send(doc.sheetsByIndex[0].headerValues);
 });
 
