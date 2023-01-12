@@ -32,16 +32,14 @@ app.get('/url', async (req, res) => {
 	res.send(url);
 });
 
-const STORED_TOKENS = {};
-
 app.get('/oauthcallback', async (req, res) => {
 	const { tokens } = await oauth2Client.getToken(req.query.code);
-	STORED_TOKENS[tokens.access_token] = tokens;
-	res.redirect(`${process.env.APP_HOME_URL}?token=${tokens.access_token}`);
+	const stringTokens = JSON.stringify(tokens);
+	res.redirect(`${process.env.APP_HOME_URL}?tokens=${stringTokens}`);
 });
 
 app.get('/create', async (req, res) => {
-	const tokens = STORED_TOKENS[req.query.token];
+	const tokens = JSON.parse(req.query.tokens);
 	oauth2Client.setCredentials(tokens);
 	const doc = new GoogleSpreadsheet();
 	doc.useOAuth2Client(oauth2Client);
