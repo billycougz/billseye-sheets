@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import AddRecordPanel from './AddRecordPanel';
+import SheetSelectionPanel from './SheetSelectionPanel';
+import GamesPlayedTable from './GamesPlayedTable';
+import Leaderboard from './Leaderboard';
 
 function App() {
-	const [title, setTitle] = useState('');
+	const [sheetsData, setSheetsData] = useState(null);
+	const API_BASE = 'http://localhost:6969';
 
 	useEffect(() => {
 		const url = new URL(window.location.href);
@@ -17,16 +22,16 @@ function App() {
 		}
 	}, []);
 
-	const handleCreateClick = async () => {
-		const response = await axios(
-			`http://localhost:6969/create?tokens=${localStorage.getItem('sheets-tokens')}&title=${title}`
-		);
+	const handleUpdate = (updatedData) => {
+		setSheetsData(updatedData);
 	};
 
 	return (
 		<div className='App'>
-			<input value={title} onChange={(e) => setTitle(e.target.value)} />
-			<button onClick={handleCreateClick}>Create</button>
+			{!sheetsData && <SheetSelectionPanel onUpdate={handleUpdate} />}
+			{sheetsData && <AddRecordPanel data={sheetsData} onUpdate={handleUpdate} onBack={() => setSheetsData(null)} />}
+			{sheetsData && <GamesPlayedTable data={sheetsData} />}
+			{sheetsData && <Leaderboard data={sheetsData} />}
 		</div>
 	);
 }

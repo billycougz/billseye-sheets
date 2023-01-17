@@ -1,20 +1,15 @@
-const { GoogleSpreadsheet } = require('google-spreadsheet');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
-const app = express();
-const port = 6969;
-app.use(cors());
-
-app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
-});
-
-app.get('/', async (req, res) => {
-	res.send('69');
-});
-
+const bodyParser = require('body-parser');
 const { google } = require('googleapis');
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+
+const port = 6969;
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.listen(port, () => console.log(`App listening on port ${port}`));
 
 const oauth2Client = new google.auth.OAuth2(
 	process.env.GOOGLE_OAUTH_CLIENT_ID,
@@ -22,9 +17,12 @@ const oauth2Client = new google.auth.OAuth2(
 	process.env.OAUTH_REDIRECT_URI
 );
 
-const scopes = ['https://www.googleapis.com/auth/spreadsheets'];
+app.get('/health', async (req, res) => {
+	res.send('69');
+});
 
 app.get('/url', async (req, res) => {
+	const scopes = ['https://www.googleapis.com/auth/spreadsheets'];
 	const url = oauth2Client.generateAuthUrl({
 		access_type: 'offline', // 'online' (default) or 'offline' (gets refresh_token)
 		scope: scopes,
@@ -40,35 +38,57 @@ app.get('/oauthcallback', async (req, res) => {
 
 app.get('/create', async (req, res) => {
 	const tokens = JSON.parse(req.query.tokens);
-	oauth2Client.setCredentials(tokens);
-	const doc = new GoogleSpreadsheet();
-	doc.useOAuth2Client(oauth2Client);
+	const doc = configureDoc({ tokens });
 	await doc.createNewSpreadsheetDocument({ title: req.query.title });
-	await doc.sheetsByIndex[0].setHeaderRow(['date', 'winner', 'loser']);
-	await doc.sheetsByIndex[0].addRow(['1/11/2023', 'billy', 'kara']);
-	res.send(doc.sheetsByIndex[0].headerValues);
+	await doc.sheetsByIndex[0].updateProperties({ title: 'gamesPlayed' });
+	await doc.sheetsByIndex[0].setHeaderRow(['dateAdded', 'location', 'gameName', 'winner', 'loser']);
+	const headerValues = ['name', 'dateAdded'];
+	await doc.addSheet({ title: 'players', headerValues });
+	await doc.addSheet({ title: 'locations', headerValues });
+	await doc.addSheet({ title: 'gameNames', headerValues });
+	const documentData = await getDocumentData(doc);
+	res.send(documentData);
 });
 
-app.get('/load', async (req, res) => {
-	const doc = new GoogleSpreadsheet('1AdwxoIp9oY-iFxeuG21_JIVrHJuYosoqvh9vHAZMPbI');
+app.post('/addRecord', async (req, res) => {
+	const tokens = JSON.parse(req.headers.authorization);
+	const doc = configureDoc({ tokens, spreadsheetId: req.body.spreadsheetId });
+	await doc.loadInfo();
+	const record = JSON.parse(req.body.record);
+	record.dateAdded = new Date().toLocaleString();
+	await doc.sheetsByTitle[req.body.type].addRow(record);
+	const documentData = await getDocumentData(doc);
+	res.send(documentData);
+});
+
+app.get('/loadDoc', async (req, res) => {
+	const tokens = JSON.parse(req.query.tokens);
+	const doc = configureDoc({ tokens, spreadsheetId: req.query.spreadsheetId });
+	await doc.loadInfo();
+	const documentData = await getDocumentData(doc);
+	res.send(documentData);
+});
+
+const getDocumentData = async (doc) => {
+	const sheetNames = ['gamesPlayed', 'players', 'locations', 'gameNames'];
+	const sheetRequests = sheetNames.map((sheetName) => doc.sheetsByTitle[sheetName].getRows());
+	const sheets = await Promise.all(sheetRequests);
+	return sheets.reduce(
+		(documentData, sheetRows, index) => {
+			const sheetName = sheetNames[index];
+			documentData[sheetName] = sheetRows.map((row) => {
+				const headerValues = Object.keys(row).filter((value) => value[0] !== '_');
+				return headerValues.reduce((sheet, headerValue) => ({ ...sheet, [headerValue]: row[headerValue] }), {});
+			});
+			return documentData;
+		},
+		{ title: doc.title, spreadsheetId: doc.spreadsheetId }
+	);
+};
+
+const configureDoc = ({ tokens, spreadsheetId }) => {
+	oauth2Client.setCredentials(tokens);
+	const doc = new GoogleSpreadsheet(spreadsheetId);
 	doc.useOAuth2Client(oauth2Client);
-	await doc.loadInfo();
-	await doc.sheetsByIndex[0].loadHeaderRow();
-	res.send(doc.sheetsByIndex[0].headerValues);
-});
-
-// See docs at https://theoephraim.github.io/node-google-spreadsheet
-const getRowData = async (id = '1AdwxoIp9oY-iFxeuG21_JIVrHJuYosoqvh9vHAZMPbI') => {
-	const doc = new GoogleSpreadsheet('1AdwxoIp9oY-iFxeuG21_JIVrHJuYosoqvh9vHAZMPbI');
-	doc.useApiKey(process.env.GOOGLE_API_KEY);
-	await doc.loadInfo();
-	await doc.sheetsByIndex[0].loadHeaderRow();
-	const rows = await doc.sheetsByIndex[0].getRows();
-	const mapped = rows.map((row) => {
-		return doc.sheetsByIndex[0].headerValues.reduce((object, header) => {
-			object[header] = row[header];
-			return object;
-		}, {});
-	});
-	return mapped;
+	return doc;
 };
