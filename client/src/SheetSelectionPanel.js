@@ -33,21 +33,28 @@ function SheetSelectionPanel({ onUpdate }) {
 	return (
 		<div>
 			<h1>Billseye Dart Database</h1>
-			<p>Now powered by your own Google Sheets.</p>
-			<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter a database name...' />
+			<p>
+				Now powered by your own <span className='sheets'>Google Sheets</span>.
+			</p>
+			<p>Create a new Sheets document to store your data or load a document previously created through Billseye.</p>
+			<h3>Create a new Sheets document</h3>
+			<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter a name...' />
 			<button onClick={handleCreateClick}>Create New</button>
-			<br />
-			<input
-				value={spreadsheetId}
-				onChange={(e) => setSpreadsheetId(e.target.value)}
-				placeholder='Enter a database id...'
-			/>
+
+			<h3>Load a previously used Sheets document</h3>
 			<select onChange={handlePreviousDatabaseClick}>
-				<option selected={!previousDatabases}>Select previous database</option>
+				<option selected={!previousDatabases}>Select previous document</option>
 				{previousDatabases.map(({ id, title }) => (
 					<option value={id}>{title}</option>
 				))}
 			</select>
+			<button onClick={handleLoadClick}>Load Existing</button>
+			<h3>Load an existing Sheets document by ID</h3>
+			<input
+				value={spreadsheetId}
+				onChange={(e) => setSpreadsheetId(e.target.value)}
+				placeholder='Enter a document id...'
+			/>
 			<button onClick={handleLoadClick}>Load Existing</button>
 		</div>
 	);

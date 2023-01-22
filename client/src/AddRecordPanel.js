@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-function AddRecordPanel({ data, onUpdate, onBack }) {
+function AddRecordPanel({ data, onUpdate }) {
 	const { spreadsheetId } = data;
 	const EMPTY_RECORD = { date: null, winner: null, loser: null, location: null, gameName: null };
 	const { locations = [], gameNames = [], players = [] } = data;
@@ -45,9 +45,6 @@ function AddRecordPanel({ data, onUpdate, onBack }) {
 
 	return (
 		<div>
-			<h1>{data.title}</h1>
-			<button onClick={onBack}>Back</button>
-			<hr />
 			<div>
 				<select value={location} onChange={(e) => setRecordData({ ...recordData, location: e.target.value })}>
 					<option disabled value={null} selected={!location}>

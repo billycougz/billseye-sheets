@@ -5,8 +5,39 @@ import AddRecordPanel from './AddRecordPanel';
 import SheetSelectionPanel from './SheetSelectionPanel';
 import GamesPlayedTable from './GamesPlayedTable';
 import Leaderboard from './Leaderboard';
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Unstable_Grid2';
+import Header from './Header';
+
+const theme = createTheme({
+	palette: {
+		primary: {
+			light: '#757ce8',
+			main: '#66ccff',
+			dark: '#002884',
+			contrastText: '#fff',
+		},
+		secondary: {
+			light: '#ff7961',
+			main: '#f44336',
+			dark: '#ba000d',
+			contrastText: '#000',
+		},
+	},
+});
+
+const Item = styled(Paper)(({ theme }) => ({
+	backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+	...theme.typography.body2,
+	padding: theme.spacing(1),
+	textAlign: 'center',
+	color: theme.palette.text.secondary,
+}));
 
 function App() {
+	const [view, setView] = useState('selection');
 	const [sheetsData, setSheetsData] = useState(null);
 	const API_BASE = 'http://localhost:6969';
 
@@ -24,15 +55,34 @@ function App() {
 
 	const handleUpdate = (updatedData) => {
 		setSheetsData(updatedData);
+		const newView = view === 'selection' ? 'history' : view;
+		setView(newView);
 	};
 
 	return (
-		<div className='App'>
-			{!sheetsData && <SheetSelectionPanel onUpdate={handleUpdate} />}
-			{sheetsData && <AddRecordPanel data={sheetsData} onUpdate={handleUpdate} onBack={() => setSheetsData(null)} />}
-			{sheetsData && <GamesPlayedTable data={sheetsData} />}
-			{sheetsData && <Leaderboard data={sheetsData} />}
-		</div>
+		<ThemeProvider theme={theme}>
+			<Header onNavClick={setView} title={sheetsData?.title} view={view} />
+			<Box className='main'>
+				{view === 'selection' && <SheetSelectionPanel onUpdate={handleUpdate} />}
+				{view !== 'selection' && (
+					<Grid container spacing={2}>
+						<Grid xs={4}>
+							<Item>
+								{view !== 'selection' && (
+									<AddRecordPanel data={sheetsData} onUpdate={handleUpdate} onBack={() => setSheetsData(null)} />
+								)}
+							</Item>
+						</Grid>
+						<Grid xs={8}>
+							<Item>
+								{view === 'history' && <GamesPlayedTable data={sheetsData} />}
+								{view === 'leaderboard' && <Leaderboard data={sheetsData} />}
+							</Item>
+						</Grid>
+					</Grid>
+				)}
+			</Box>
+		</ThemeProvider>
 	);
 }
 
