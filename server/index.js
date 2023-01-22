@@ -37,36 +37,48 @@ app.get('/oauthcallback', async (req, res) => {
 });
 
 app.get('/create', async (req, res) => {
-	const tokens = JSON.parse(req.query.tokens);
-	const doc = configureDoc({ tokens });
-	await doc.createNewSpreadsheetDocument({ title: req.query.title });
-	await doc.sheetsByIndex[0].updateProperties({ title: 'gamesPlayed' });
-	await doc.sheetsByIndex[0].setHeaderRow(['dateAdded', 'location', 'gameName', 'winner', 'loser']);
-	const headerValues = ['name', 'dateAdded'];
-	await doc.addSheet({ title: 'players', headerValues });
-	await doc.addSheet({ title: 'locations', headerValues });
-	await doc.addSheet({ title: 'gameNames', headerValues });
-	const documentData = await getDocumentData(doc);
-	res.send(documentData);
+	try {
+		const tokens = JSON.parse(req.query.tokens);
+		const doc = configureDoc({ tokens });
+		await doc.createNewSpreadsheetDocument({ title: req.query.title });
+		await doc.sheetsByIndex[0].updateProperties({ title: 'gamesPlayed' });
+		await doc.sheetsByIndex[0].setHeaderRow(['dateAdded', 'location', 'gameName', 'winner', 'loser']);
+		const headerValues = ['name', 'dateAdded'];
+		await doc.addSheet({ title: 'players', headerValues });
+		await doc.addSheet({ title: 'locations', headerValues });
+		await doc.addSheet({ title: 'gameNames', headerValues });
+		const documentData = await getDocumentData(doc);
+		res.send(documentData);
+	} catch (e) {
+		res.send({ error: 'There was an error' });
+	}
 });
 
 app.post('/addRecord', async (req, res) => {
-	const tokens = JSON.parse(req.headers.authorization);
-	const doc = configureDoc({ tokens, spreadsheetId: req.body.spreadsheetId });
-	await doc.loadInfo();
-	const record = JSON.parse(req.body.record);
-	record.dateAdded = new Date().toLocaleString();
-	await doc.sheetsByTitle[req.body.type].addRow(record);
-	const documentData = await getDocumentData(doc);
-	res.send(documentData);
+	try {
+		const tokens = JSON.parse(req.headers.authorization);
+		const doc = configureDoc({ tokens, spreadsheetId: req.body.spreadsheetId });
+		await doc.loadInfo();
+		const record = JSON.parse(req.body.record);
+		record.dateAdded = new Date().toLocaleString();
+		await doc.sheetsByTitle[req.body.type].addRow(record);
+		const documentData = await getDocumentData(doc);
+		res.send(documentData);
+	} catch (e) {
+		res.send({ error: 'There was an error' });
+	}
 });
 
 app.get('/loadDoc', async (req, res) => {
-	const tokens = JSON.parse(req.query.tokens);
-	const doc = configureDoc({ tokens, spreadsheetId: req.query.spreadsheetId });
-	await doc.loadInfo();
-	const documentData = await getDocumentData(doc);
-	res.send(documentData);
+	try {
+		const tokens = JSON.parse(req.query.tokens);
+		const doc = configureDoc({ tokens, spreadsheetId: req.query.spreadsheetId });
+		await doc.loadInfo();
+		const documentData = await getDocumentData(doc);
+		res.send(documentData);
+	} catch (e) {
+		res.send({ error: 'There was an error' });
+	}
 });
 
 const getDocumentData = async (doc) => {

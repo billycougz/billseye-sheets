@@ -14,7 +14,9 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 			`http://localhost:6969/create?tokens=${localStorage.getItem('sheets-tokens')}&title=${title}`
 		);
 		onLoadingChange(false);
-		onUpdate(data);
+		if (!data.error) {
+			onUpdate(data);
+		}
 	};
 
 	const handleLoadClick = async () => {
@@ -23,11 +25,13 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 			`http://localhost:6969/loadDoc?tokens=${localStorage.getItem('sheets-tokens')}&spreadsheetId=${spreadsheetId}`
 		);
 		onLoadingChange(false);
-		onUpdate(data);
-		const databases = previousDatabases.filter(({ name, id }) => id !== spreadsheetId);
-		databases.push({ title: data.title, id: spreadsheetId });
-		localStorage.setItem('previous-databases', JSON.stringify(databases));
-		setPreviousDatabases(databases);
+		if (!data.error) {
+			onUpdate(data);
+			const databases = previousDatabases.filter(({ name, id }) => id !== spreadsheetId);
+			databases.push({ title: data.title, id: spreadsheetId });
+			localStorage.setItem('previous-databases', JSON.stringify(databases));
+			setPreviousDatabases(databases);
+		}
 	};
 
 	const handlePreviousDatabaseClick = (e) => {

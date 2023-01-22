@@ -19,8 +19,10 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 		const headers = { Authorization: localStorage.getItem('sheets-tokens') };
 		const { data } = await axios.post(url, { type: 'gamesPlayed', record, spreadsheetId }, { headers });
 		onLoadingChange(false);
-		setRecordData(EMPTY_RECORD);
-		onUpdate(data);
+		if (!data.error) {
+			setRecordData(EMPTY_RECORD);
+			onUpdate(data);
+		}
 	};
 
 	const handleAddNewClick = async (type) => {
@@ -32,10 +34,12 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 			const record = JSON.stringify({ name: addNewValue });
 			const { data } = await axios.post(url, { type, record, spreadsheetId }, { headers });
 			onLoadingChange(false);
-			onUpdate(data);
-			setRecordData({ ...recordData, [addNewField]: addNewValue });
-			setAddNewField(null);
-			setAddNewValue('');
+			if (!data.error) {
+				onUpdate(data);
+				setRecordData({ ...recordData, [addNewField]: addNewValue });
+				setAddNewField(null);
+				setAddNewValue('');
+			}
 		} else {
 			setAddNewField(type);
 			setAddNewValue('');
