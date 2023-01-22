@@ -49,6 +49,7 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 
 	return (
 		<div>
+			<h1>Add Game Record</h1>
 			<div>
 				<select value={location} onChange={(e) => setRecordData({ ...recordData, location: e.target.value })}>
 					<option disabled value={null} selected={!location}>

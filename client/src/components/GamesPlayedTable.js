@@ -1,11 +1,14 @@
 function GamesPlayedTable({ data }) {
 	const { gamesPlayed = [] } = data;
+	gamesPlayed.sort(function (a, b) {
+		return new Date(b.dateAdded) - new Date(a.dateAdded);
+	});
 	return (
 		<div>
-			<h3>Game Log</h3>
+			<h1>Game History</h1>
 			<table style={{ margin: '1em auto' }}>
 				<tr>
-					<th>Date</th>
+					<th>Date Added</th>
 					<th>Location</th>
 					<th>Game Name</th>
 					<th>Winner</th>

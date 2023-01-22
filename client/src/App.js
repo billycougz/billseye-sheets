@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import './App.css';
-import AddRecordPanel from './AddRecordPanel';
-import SheetSelectionPanel from './SheetSelectionPanel';
-import GamesPlayedTable from './GamesPlayedTable';
-import Leaderboard from './Leaderboard';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
-import Header from './Header';
-import Loader from './Loader';
+import './App.css';
+import AddRecordPanel from './components/AddRecordPanel';
+import SheetSelectionPanel from './components/SheetSelectionPanel';
+import GamesPlayedTable from './components/GamesPlayedTable';
+import Leaderboard from './components/Leaderboard';
+import Header from './components/Header';
+import Loader from './components/Loader';
 
 const theme = createTheme({
 	palette: {
@@ -66,19 +65,16 @@ function App() {
 			<Loader open={isLoading} />
 			<Header onNavClick={setView} title={sheetsData?.title} view={view} />
 			<Box className='main'>
-				{view === 'selection' && <SheetSelectionPanel 
-					onUpdate={handleUpdate} 
-					onLoadingChange={setIsLoading}
-				/>}
+				{view === 'selection' && <SheetSelectionPanel onUpdate={handleUpdate} onLoadingChange={setIsLoading} />}
 				{view !== 'selection' && (
 					<Grid container spacing={2}>
 						<Grid xs={4}>
 							<Item>
 								{view !== 'selection' && (
-									<AddRecordPanel 
-										data={sheetsData} 
-										onUpdate={handleUpdate} 
-										onBack={() => setSheetsData(null)} 
+									<AddRecordPanel
+										data={sheetsData}
+										onUpdate={handleUpdate}
+										onBack={() => setSheetsData(null)}
 										onLoadingChange={setIsLoading}
 									/>
 								)}

@@ -14,7 +14,7 @@ function Leaderboard({ data }) {
 	});
 	return (
 		<div>
-			<h3>Leaderboard</h3>
+			<h1>Leaderboard</h1>
 			<table style={{ margin: '1em auto' }}>
 				<tr>
 					<th>Player</th>
@@ -27,7 +27,7 @@ function Leaderboard({ data }) {
 						<td>{player.name}</td>
 						<td>{player.wins}</td>
 						<td>{player.losses}</td>
-						<td>{player.pct}</td>
+						<td>{player.pct.toFixed(2)}</td>
 					</tr>
 				))}
 			</table>

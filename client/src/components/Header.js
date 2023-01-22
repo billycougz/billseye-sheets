@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import logo from '../logo.png';
 
 function Header({ onNavClick, title, view }) {
 	return (
@@ -22,7 +23,7 @@ function Header({ onNavClick, title, view }) {
 						<ArrowBackIcon />
 					</IconButton>
 				)}
-
+				<img id='logo' alt='logo' src={logo} />
 				<Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
 					{`Billseye${view !== 'selection' ? ' • ' + title : ''}`}
 				</Typography>
