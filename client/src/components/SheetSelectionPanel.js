@@ -40,10 +40,6 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 
 	return (
 		<div>
-			<h1>Billseye Dart Database</h1>
-			<p>
-				Now powered by your own <span className='sheets'>Google Sheets</span>.
-			</p>
 			<p>Create a new Sheets document to store your data or load a document previously created through Billseye.</p>
 			<h3>Create a new Sheets document</h3>
 			<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter a name...' />

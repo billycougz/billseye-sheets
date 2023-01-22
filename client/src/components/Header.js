@@ -7,7 +7,11 @@ import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import logo from '../logo.png';
 
-function Header({ onNavClick, title, view }) {
+function Header({ onNavClick, title, view, loggedIn }) {
+	const handleLogout = () => {
+		localStorage.removeItem('sheets-tokens');
+		window.location.reload();
+	};
 	return (
 		<AppBar position='static'>
 			<Toolbar>
@@ -36,6 +40,11 @@ function Header({ onNavClick, title, view }) {
 							Leaderboard
 						</Button>
 					</>
+				)}
+				{loggedIn && (
+					<Button color='inherit' onClick={handleLogout}>
+						Logout
+					</Button>
 				)}
 			</Toolbar>
 		</AppBar>
