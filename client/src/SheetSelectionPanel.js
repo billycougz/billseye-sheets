@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-function SheetSelectionPanel({ onUpdate }) {
+function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 	const [title, setTitle] = useState('');
 	const [spreadsheetId, setSpreadsheetId] = useState('');
 	const [previousDatabases, setPreviousDatabases] = useState(
@@ -9,16 +9,20 @@ function SheetSelectionPanel({ onUpdate }) {
 	);
 
 	const handleCreateClick = async () => {
+		onLoadingChange(true);
 		const { data } = await axios(
 			`http://localhost:6969/create?tokens=${localStorage.getItem('sheets-tokens')}&title=${title}`
 		);
+		onLoadingChange(false);
 		onUpdate(data);
 	};
 
 	const handleLoadClick = async () => {
+		onLoadingChange(true);
 		const { data } = await axios(
 			`http://localhost:6969/loadDoc?tokens=${localStorage.getItem('sheets-tokens')}&spreadsheetId=${spreadsheetId}`
 		);
+		onLoadingChange(false);
 		onUpdate(data);
 		const databases = previousDatabases.filter(({ name, id }) => id !== spreadsheetId);
 		databases.push({ title: data.title, id: spreadsheetId });

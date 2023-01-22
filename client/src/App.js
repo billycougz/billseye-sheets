@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
 import Header from './Header';
+import Loader from './Loader';
 
 const theme = createTheme({
 	palette: {
@@ -39,6 +40,7 @@ const Item = styled(Paper)(({ theme }) => ({
 function App() {
 	const [view, setView] = useState('selection');
 	const [sheetsData, setSheetsData] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
 	const API_BASE = 'http://localhost:6969';
 
 	useEffect(() => {
@@ -61,15 +63,24 @@ function App() {
 
 	return (
 		<ThemeProvider theme={theme}>
+			<Loader open={isLoading} />
 			<Header onNavClick={setView} title={sheetsData?.title} view={view} />
 			<Box className='main'>
-				{view === 'selection' && <SheetSelectionPanel onUpdate={handleUpdate} />}
+				{view === 'selection' && <SheetSelectionPanel 
+					onUpdate={handleUpdate} 
+					onLoadingChange={setIsLoading}
+				/>}
 				{view !== 'selection' && (
 					<Grid container spacing={2}>
 						<Grid xs={4}>
 							<Item>
 								{view !== 'selection' && (
-									<AddRecordPanel data={sheetsData} onUpdate={handleUpdate} onBack={() => setSheetsData(null)} />
+									<AddRecordPanel 
+										data={sheetsData} 
+										onUpdate={handleUpdate} 
+										onBack={() => setSheetsData(null)} 
+										onLoadingChange={setIsLoading}
+									/>
 								)}
 							</Item>
 						</Grid>
