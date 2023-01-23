@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/billseye-sheets/static/css/main.013e73af.css",
+    "main.js": "/billseye-sheets/static/js/main.876fa9d3.js",
+    "static/js/787.cccd431f.chunk.js": "/billseye-sheets/static/js/787.cccd431f.chunk.js",
+    "static/media/logo.png": "/billseye-sheets/static/media/logo.17aa0c757a02539027f9.png",
+    "index.html": "/billseye-sheets/index.html",
+    "main.013e73af.css.map": "/billseye-sheets/static/css/main.013e73af.css.map",
+    "main.876fa9d3.js.map": "/billseye-sheets/static/js/main.876fa9d3.js.map",
+    "787.cccd431f.chunk.js.map": "/billseye-sheets/static/js/787.cccd431f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.013e73af.css",
+    "static/js/main.876fa9d3.js"
+  ]
+}
