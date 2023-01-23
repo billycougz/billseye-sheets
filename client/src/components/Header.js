@@ -27,7 +27,9 @@ function Header({ onNavClick, title, view, loggedIn }) {
 						<ArrowBackIcon />
 					</IconButton>
 				)}
-				<img id='logo' alt='logo' src={logo} />
+				<a id='logo-link' href={window.location.origin}>
+					<img id='logo' alt='logo' src={logo} />
+				</a>
 				<Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
 					{`Billseye${view !== 'selection' ? ' • ' + title : ''}`}
 				</Typography>

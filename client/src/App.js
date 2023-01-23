@@ -71,11 +71,20 @@ function App() {
 			<Loader open={isLoading} />
 			<Header onNavClick={setView} title={sheetsData?.title} view={view} loggedIn={loggedIn} />
 			<Box className='main'>
-				<h1>Billseye Dart Database</h1>
-				<p>
-					Now powered by your own <span className='sheets'>Google Sheets</span>.
-				</p>
-				{!loggedIn && <button onClick={handleLogin}>Login to Google Sheets</button>}
+				{view !== 'history' && view !== 'leaderboard' && (
+					<>
+						<h1>Billseye Dart Database</h1>
+						<p>
+							Now powered by your own{' '}
+							<a href='https://docs.google.com/spreadsheets/u/0/' target='_blank' className='sheets'>
+								Google Sheets
+							</a>
+							.
+						</p>
+					</>
+				)}
+
+				{!loggedIn && <button onClick={handleLogin}>Log in to Google Sheets</button>}
 			</Box>
 			{loggedIn && (
 				<Box className='main'>

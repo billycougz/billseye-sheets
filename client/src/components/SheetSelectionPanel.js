@@ -43,7 +43,9 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 			<p>Create a new Sheets document to store your data or load a document previously created through Billseye.</p>
 			<h3>Create a new Sheets document</h3>
 			<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter a name...' />
-			<button onClick={handleCreateClick}>Create New</button>
+			<button onClick={handleCreateClick} disabled={!title}>
+				Create New
+			</button>
 
 			<h3>Load a previously used Sheets document</h3>
 			<select onChange={handlePreviousDatabaseClick}>
@@ -52,14 +54,18 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 					<option value={id}>{title}</option>
 				))}
 			</select>
-			<button onClick={handleLoadClick}>Load Existing</button>
+			<button onClick={handleLoadClick} disabled={!spreadsheetId}>
+				Load Existing
+			</button>
 			<h3>Load an existing Sheets document by ID</h3>
 			<input
 				value={spreadsheetId}
 				onChange={(e) => setSpreadsheetId(e.target.value)}
 				placeholder='Enter a document id...'
 			/>
-			<button onClick={handleLoadClick}>Load Existing</button>
+			<button onClick={handleLoadClick} disabled={!spreadsheetId}>
+				Load Existing
+			</button>
 		</div>
 	);
 }
