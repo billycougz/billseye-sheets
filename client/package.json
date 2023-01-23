@@ -2,7 +2,7 @@
   "name": "sheets",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://billycougz.github.io/billseye-sheets",
+  "homepage": "https://billycougz.github.io",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
