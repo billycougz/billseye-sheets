@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const BASE_URL =
 	window.location.hostname === 'localhost'
-		? 'http://localhost:6969/default'
-		: 'https://btu0auxxnf.execute-api.us-east-1.amazonaws.com/default';
+		? 'http://localhost:6969/main'
+		: 'https://btu0auxxnf.execute-api.us-east-1.amazonaws.com/main';
 
 const getHeaders = () => ({ Authorization: localStorage.getItem('sheets-tokens') });
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createNewDocument, loadDocument } from './api';
+import { createNewDocument, loadDocument } from '../api';
 
 function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 	const [title, setTitle] = useState('');

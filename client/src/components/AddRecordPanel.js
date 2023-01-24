@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { addNewRecord } from './api';
+import { addNewRecord } from '../api';
 
 function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 	const { spreadsheetId } = data;

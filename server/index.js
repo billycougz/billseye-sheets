@@ -7,16 +7,16 @@ exports.handler = async (event) => {
 	try {
 		let responseData;
 		switch (event.path) {
-			case '/default/oauthcallback':
+			case '/main/oauthcallback':
 				// This route returns directly (vs the common response) because it returns a redirect
 				return await handleOAuthCallback(event);
-			case '/default/create':
+			case '/main/create':
 				responseData = await handleCreate(event);
 				break;
-			case '/default/addRecord':
+			case '/main/addRecord':
 				responseData = await handleAddRecord(event);
 				break;
-			case '/default/loadDoc':
+			case '/main/loadDoc':
 				responseData = await handleLoadDoc(event);
 				break;
 			default:
@@ -78,7 +78,6 @@ const handleOAuthConsentUrl = () => {
 // GET
 const handleOAuthCallback = async (event) => {
 	const { tokens } = await oauth2Client.getToken(event.queryStringParameters.code);
-	console.log(tokens);
 	const stringTokens = JSON.stringify(tokens);
 	return {
 		statusCode: 301,

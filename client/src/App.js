@@ -10,7 +10,7 @@ import GamesPlayedTable from './components/GamesPlayedTable';
 import Leaderboard from './components/Leaderboard';
 import Header from './components/Header';
 import Loader from './components/Loader';
-import { loginToGoogle } from './components/api';
+import { loginToGoogle } from './api';
 
 const theme = createTheme({
 	palette: {
