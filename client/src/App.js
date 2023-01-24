@@ -10,6 +10,7 @@ import GamesPlayedTable from './components/GamesPlayedTable';
 import Leaderboard from './components/Leaderboard';
 import Header from './components/Header';
 import Loader from './components/Loader';
+import { loginToGoogle } from './components/api';
 
 const theme = createTheme({
 	palette: {
@@ -61,11 +62,6 @@ function App() {
 		setView(newView);
 	};
 
-	const handleLogin = () => {
-		window.location.href =
-			'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fspreadsheets&response_type=code&client_id=410398723822-o8k13cm1jf9eiduq8ce8fk890qfad23j.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A6969%2Foauthcallback';
-	};
-
 	return (
 		<ThemeProvider theme={theme}>
 			<Loader open={isLoading} />
@@ -84,7 +80,7 @@ function App() {
 					</>
 				)}
 
-				{!loggedIn && <button onClick={handleLogin}>Log in to Google Sheets</button>}
+				{!loggedIn && <button onClick={loginToGoogle}>Log in to Google Sheets</button>}
 			</Box>
 			{loggedIn && (
 				<Box className='main'>

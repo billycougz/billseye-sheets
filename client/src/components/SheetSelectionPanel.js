@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { createNewDocument, loadDocument } from './api';
 
 function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 	const [title, setTitle] = useState('');
@@ -10,9 +10,7 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 
 	const handleCreateClick = async () => {
 		onLoadingChange(true);
-		const { data } = await axios(
-			`http://localhost:6969/create?tokens=${localStorage.getItem('sheets-tokens')}&title=${title}`
-		);
+		const data = await createNewDocument(title);
 		onLoadingChange(false);
 		if (!data.error) {
 			onUpdate(data);
@@ -21,9 +19,7 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 
 	const handleLoadClick = async () => {
 		onLoadingChange(true);
-		const { data } = await axios(
-			`http://localhost:6969/loadDoc?tokens=${localStorage.getItem('sheets-tokens')}&spreadsheetId=${spreadsheetId}`
-		);
+		const data = await loadDocument(spreadsheetId);
 		onLoadingChange(false);
 		if (!data.error) {
 			onUpdate(data);

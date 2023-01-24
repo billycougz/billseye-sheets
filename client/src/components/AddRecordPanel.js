@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { addNewRecord } from './api';
 
 function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 	const { spreadsheetId } = data;
@@ -10,14 +10,11 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 	const [addNewValue, setAddNewValue] = useState('');
 	const { location, gameName, winner, loser } = recordData;
 	const isComplete = location && gameName && winner && loser;
-	const API_BASE = 'http://localhost:6969';
 
 	const handleSubmitClick = async () => {
 		onLoadingChange(true);
 		const record = JSON.stringify(recordData);
-		const url = `${API_BASE}/addRecord`;
-		const headers = { Authorization: localStorage.getItem('sheets-tokens') };
-		const { data } = await axios.post(url, { type: 'gamesPlayed', record, spreadsheetId }, { headers });
+		const data = await addNewRecord({ type: 'gamesPlayed', record, spreadsheetId });
 		onLoadingChange(false);
 		if (!data.error) {
 			setRecordData(EMPTY_RECORD);
@@ -28,11 +25,9 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 	const handleAddNewClick = async (type) => {
 		if (addNewField === type) {
 			onLoadingChange(true);
-			const url = `${API_BASE}/addRecord`;
-			const headers = { Authorization: localStorage.getItem('sheets-tokens') };
 			type = type === 'winner' || type === 'loser' ? 'players' : type;
 			const record = JSON.stringify({ name: addNewValue });
-			const { data } = await axios.post(url, { type, record, spreadsheetId }, { headers });
+			const data = await addNewRecord({ type, record, spreadsheetId });
 			onLoadingChange(false);
 			if (!data.error) {
 				onUpdate(data);
