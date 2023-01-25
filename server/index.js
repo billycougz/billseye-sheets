@@ -7,16 +7,16 @@ exports.handler = async (event) => {
 	try {
 		let responseData;
 		switch (event.path) {
-			case '/main/oauthcallback':
+			case '/default/oauthcallback':
 				// This route returns directly (vs the common response) because it returns a redirect
 				return await handleOAuthCallback(event);
-			case '/main/create':
+			case '/default/create':
 				responseData = await handleCreate(event);
 				break;
-			case '/main/addRecord':
+			case '/default/addRecord':
 				responseData = await handleAddRecord(event);
 				break;
-			case '/main/loadDoc':
+			case '/default/loadDoc':
 				responseData = await handleLoadDoc(event);
 				break;
 			default:
@@ -116,7 +116,7 @@ const handleAddRecord = async (event) => {
 
 // GET
 const handleLoadDoc = async (event) => {
-	const tokens = JSON.parse(event.queryStringParameters.tokens);
+	const tokens = JSON.parse(event.headers.authorization);
 	const doc = configureDoc({ tokens, spreadsheetId: event.queryStringParameters.spreadsheetId });
 	await doc.loadInfo();
 	const documentData = await getDocumentData(doc);

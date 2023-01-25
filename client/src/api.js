@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const BASE_URL =
 	window.location.hostname === 'localhost'
-		? 'http://localhost:6969/main'
-		: 'https://btu0auxxnf.execute-api.us-east-1.amazonaws.com/main';
+		? 'http://localhost:6969/default'
+		: 'https://btu0auxxnf.execute-api.us-east-1.amazonaws.com/default';
 
 const getHeaders = () => ({ Authorization: localStorage.getItem('sheets-tokens') });
 
@@ -39,7 +39,7 @@ const loadDocument = async (spreadsheetId) => {
 	const url = `${BASE_URL}/loadDoc`;
 	const params = { spreadsheetId };
 	const headers = getHeaders();
-	const { data } = await axios.get(url, { params }, { headers });
+	const { data } = await axios.get(url, { params, headers });
 	return data;
 };
 
