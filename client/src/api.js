@@ -3,7 +3,7 @@ import axios from 'axios';
 const BASE_URL =
 	window.location.hostname === 'localhost'
 		? 'http://localhost:6969/default'
-		: 'https://btu0auxxnf.execute-api.us-east-1.amazonaws.com/default';
+		: 'https://378hu8lq90.execute-api.us-east-1.amazonaws.com/default';
 
 const getHeaders = () => ({ Authorization: localStorage.getItem('sheets-tokens') });
 
