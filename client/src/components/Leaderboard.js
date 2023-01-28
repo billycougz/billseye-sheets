@@ -16,20 +16,24 @@ function Leaderboard({ data }) {
 		<div>
 			<h1>Leaderboard</h1>
 			<table style={{ margin: '1em auto' }}>
-				<tr>
-					<th>Player</th>
-					<th>Wins</th>
-					<th>Losses</th>
-					<th>Pct</th>
-				</tr>
-				{rankedPlayers.map((player) => (
+				<thead>
 					<tr>
-						<td>{player.name}</td>
-						<td>{player.wins}</td>
-						<td>{player.losses}</td>
-						<td>{player.pct.toFixed(2)}</td>
+						<th>Player</th>
+						<th>Wins</th>
+						<th>Losses</th>
+						<th>Pct</th>
 					</tr>
-				))}
+				</thead>
+				<tbody>
+					{rankedPlayers.map((player) => (
+						<tr key={player.name}>
+							<td>{player.name}</td>
+							<td>{player.wins}</td>
+							<td>{player.losses}</td>
+							<td>{player.pct.toFixed(2)}</td>
+						</tr>
+					))}
+				</tbody>
 			</table>
 		</div>
 	);

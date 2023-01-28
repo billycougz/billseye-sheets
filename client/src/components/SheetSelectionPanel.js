@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { createNewDocument, loadDocument } from '../api';
+import Alert from './Alert';
 
 function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 	const [newSheetTitle, setNewSheetTitle] = useState('');
 	const [recentSheetSelection, setRecentSheetSelection] = useState('');
 	const [existingSheetId, setExistingSheetsId] = useState('');
-	const [error, setError] = useState('');
+	const [invalidUrl, setInvalidUrl] = useState('');
+	const [hasAlert, setHasAlert] = useState(false);
 	const [recentSheets, setRecentSheets] = useState(JSON.parse(localStorage.getItem('recent-sheets') || '[]'));
 
 	const handleCreateClick = async () => {
@@ -26,6 +28,8 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 		if (!data.error) {
 			onUpdate(data);
 			updateRecentSheets(data);
+		} else {
+			setHasAlert(true);
 		}
 	};
 
@@ -45,15 +49,16 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 		const sheetIdIndex = segments.findIndex((segment) => segment === 'd') + 1;
 		if (sheetIdIndex) {
 			setExistingSheetsId(segments[sheetIdIndex]);
-			setError('');
+			setInvalidUrl('');
 		} else {
 			setExistingSheetsId('');
-			setError(existingSheetUrl ? 'This is not a valid Sheets URL' : '');
+			setInvalidUrl(existingSheetUrl ? 'This is not a valid Sheets URL' : '');
 		}
 	};
 
 	return (
 		<div>
+			<Alert open={hasAlert} onClose={() => setHasAlert(false)} />
 			<p>Create a new Sheets database to store your data or load a database previously created through Billseye.</p>
 			<h3>Create a new Sheets database</h3>
 			<input value={newSheetTitle} onChange={(e) => setNewSheetTitle(e.target.value)} placeholder='Enter a name...' />
@@ -67,9 +72,11 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 				<>
 					<h3>Load a recently used Sheets database</h3>
 					<select onChange={handleRecentSheetSelection}>
-						<option selected={!recentSheets}>Select a Sheets database</option>
+						<option>Select a Sheets database</option>
 						{recentSheets.map(({ id, title }) => (
-							<option value={id}>{title}</option>
+							<option key={id} value={id}>
+								{title}
+							</option>
 						))}
 					</select>
 					<button onClick={() => handleLoadClick('recent')} disabled={!recentSheetSelection}>
@@ -83,7 +90,7 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 			<button onClick={() => handleLoadClick('existing')} disabled={!existingSheetId}>
 				Load Existing
 			</button>
-			{error}
+			{invalidUrl}
 		</div>
 	);
 }

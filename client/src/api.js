@@ -11,7 +11,8 @@ const loginToGoogle = () => {
 	const OAUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 	const params = new URLSearchParams({
 		access_type: 'offline',
-		scope: 'https://www.googleapis.com/auth/spreadsheets',
+		prompt: 'consent',
+		scope: ['https://www.googleapis.com/auth/spreadsheets'],
 		response_type: 'code',
 		client_id: '410398723822-o8k13cm1jf9eiduq8ce8fk890qfad23j.apps.googleusercontent.com',
 		redirect_uri: `${BASE_URL}/oauthcallback`,
@@ -20,27 +21,39 @@ const loginToGoogle = () => {
 };
 
 const createNewDocument = async (title) => {
-	const url = `${BASE_URL}/create`;
-	const body = { title };
-	const headers = getHeaders();
-	const { data } = await axios.post(url, body, { headers });
-	return data;
+	try {
+		const url = `${BASE_URL}/create`;
+		const body = { title };
+		const headers = getHeaders();
+		const { data } = await axios.post(url, body, { headers });
+		return data;
+	} catch (e) {
+		return { error: 'Error' };
+	}
 };
 
 const addNewRecord = async ({ type, record, spreadsheetId }) => {
-	const url = `${BASE_URL}/addRecord`;
-	const body = { type, record, spreadsheetId };
-	const headers = getHeaders();
-	const { data } = await axios.post(url, body, { headers });
-	return data;
+	try {
+		const url = `${BASE_URL}/addRecord`;
+		const body = { type, record, spreadsheetId };
+		const headers = getHeaders();
+		const { data } = await axios.post(url, body, { headers });
+		return data;
+	} catch (e) {
+		return { error: 'Error' };
+	}
 };
 
 const loadDocument = async (spreadsheetId) => {
-	const url = `${BASE_URL}/loadDoc`;
-	const params = { spreadsheetId };
-	const headers = getHeaders();
-	const { data } = await axios.get(url, { params, headers });
-	return data;
+	try {
+		const url = `${BASE_URL}/loadDoc`;
+		const params = { spreadsheetId };
+		const headers = getHeaders();
+		const { data } = await axios.get(url, { params, headers });
+		return data;
+	} catch (e) {
+		return { error: 'Error' };
+	}
 };
 
 export { loginToGoogle, createNewDocument, addNewRecord, loadDocument };

@@ -42,7 +42,6 @@ function App() {
 	const [view, setView] = useState('selection');
 	const [sheetsData, setSheetsData] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const API_BASE = 'http://localhost:6969';
 
 	useEffect(() => {
 		const url = new URL(window.location.href);
@@ -65,7 +64,7 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<Loader open={isLoading} />
-			<Header onNavClick={setView} title={sheetsData?.title} view={view} loggedIn={loggedIn} />
+			<Header onNavClick={setView} sheet={sheetsData} loggedIn={loggedIn} />
 			<Box className='main'>
 				{view !== 'history' && view !== 'leaderboard' && (
 					<>
@@ -87,7 +86,7 @@ function App() {
 					{view === 'selection' && <SheetSelectionPanel onUpdate={handleUpdate} onLoadingChange={setIsLoading} />}
 					{view !== 'selection' && (
 						<Grid container spacing={2}>
-							<Grid xs={4}>
+							<Grid xs={12} sm={4}>
 								<Item>
 									{view !== 'selection' && (
 										<AddRecordPanel
@@ -99,7 +98,7 @@ function App() {
 									)}
 								</Item>
 							</Grid>
-							<Grid xs={8}>
+							<Grid xs={12} sm={8}>
 								<Item>
 									{view === 'history' && <GamesPlayedTable data={sheetsData} />}
 									{view === 'leaderboard' && <Leaderboard data={sheetsData} />}

@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { addNewRecord } from '../api';
+import Alert from './Alert';
 
 function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 	const { spreadsheetId } = data;
-	const EMPTY_RECORD = { date: null, winner: null, loser: null, location: null, gameName: null };
+	const EMPTY_RECORD = { date: '', winner: '', loser: '', location: '', gameName: '' };
 	const { locations = [], gameNames = [], players = [] } = data;
 	const [recordData, setRecordData] = useState(EMPTY_RECORD);
 	const [addNewField, setAddNewField] = useState(null);
 	const [addNewValue, setAddNewValue] = useState('');
+	const [hasAlert, setHasAlert] = useState(false);
 	const { location, gameName, winner, loser } = recordData;
 	const isComplete = location && gameName && winner && loser;
 
@@ -19,6 +21,8 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 		if (!data.error) {
 			setRecordData(EMPTY_RECORD);
 			onUpdate(data);
+		} else {
+			setHasAlert(true);
 		}
 	};
 
@@ -34,6 +38,8 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 				setRecordData({ ...recordData, [addNewField]: addNewValue });
 				setAddNewField(null);
 				setAddNewValue('');
+			} else {
+				setHasAlert(true);
 			}
 		} else {
 			setAddNewField(type);
@@ -48,14 +54,17 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 
 	return (
 		<div>
+			<Alert open={hasAlert} onClose={() => setHasAlert(false)} />
 			<h1>Add Game Record</h1>
 			<div>
 				<select value={location} onChange={(e) => setRecordData({ ...recordData, location: e.target.value })}>
-					<option disabled value={null} selected={!location}>
+					<option disabled value=''>
 						Select location
 					</option>
 					{locations.map((location) => (
-						<option value={location.name}>{location.name}</option>
+						<option key={location.name} value={location.name}>
+							{location.name}
+						</option>
 					))}
 				</select>
 				{addNewField === 'locations' && <input value={addNewValue} onChange={(e) => setAddNewValue(e.target.value)} />}
@@ -66,11 +75,13 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 			</div>
 			<div>
 				<select value={gameName} onChange={(e) => setRecordData({ ...recordData, gameName: e.target.value })}>
-					<option disabled value={null} selected={!gameName}>
+					<option disabled value=''>
 						Select game name
 					</option>
 					{gameNames.map((gameName) => (
-						<option value={gameName.name}>{gameName.name}</option>
+						<option key={gameName.name} value={gameName.name}>
+							{gameName.name}
+						</option>
 					))}
 				</select>
 				{addNewField === 'gameNames' && <input value={addNewValue} onChange={(e) => setAddNewValue(e.target.value)} />}
@@ -81,11 +92,13 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 			</div>
 			<div>
 				<select value={winner} onChange={(e) => setRecordData({ ...recordData, winner: e.target.value })}>
-					<option disabled value={null} selected={!winner}>
+					<option disabled value=''>
 						Select winner
 					</option>
 					{players.map((player) => (
-						<option value={player.name}>{player.name}</option>
+						<option key={player.name} value={player.name}>
+							{player.name}
+						</option>
 					))}
 				</select>
 				{addNewField === 'winner' && <input value={addNewValue} onChange={(e) => setAddNewValue(e.target.value)} />}
@@ -94,11 +107,13 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 			</div>
 			<div>
 				<select value={loser} onChange={(e) => setRecordData({ ...recordData, loser: e.target.value })}>
-					<option disabled value={null} selected={!loser}>
+					<option disabled value=''>
 						Select loser
 					</option>
 					{players.map((player) => (
-						<option value={player.name}>{player.name}</option>
+						<option key={player.name} value={player.name}>
+							{player.name}
+						</option>
 					))}
 				</select>
 				{addNewField === 'loser' && <input value={addNewValue} onChange={(e) => setAddNewValue(e.target.value)} />}

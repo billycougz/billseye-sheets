@@ -7,22 +7,26 @@ function GamesPlayedTable({ data }) {
 		<div>
 			<h1>Game History</h1>
 			<table style={{ margin: '1em auto' }}>
-				<tr>
-					<th>Date Added</th>
-					<th>Location</th>
-					<th>Game Name</th>
-					<th>Winner</th>
-					<th>Loser</th>
-				</tr>
-				{gamesPlayed.map((game) => (
+				<thead>
 					<tr>
-						<td>{game.dateAdded}</td>
-						<td>{game.location}</td>
-						<td>{game.gameName}</td>
-						<td>{game.winner}</td>
-						<td>{game.loser}</td>
+						<th>Date Added</th>
+						<th>Location</th>
+						<th>Game Name</th>
+						<th>Winner</th>
+						<th>Loser</th>
 					</tr>
-				))}
+				</thead>
+				<tbody>
+					{gamesPlayed.map((game) => (
+						<tr key={game.dateAdded}>
+							<td>{game.dateAdded}</td>
+							<td>{game.location}</td>
+							<td>{game.gameName}</td>
+							<td>{game.winner}</td>
+							<td>{game.loser}</td>
+						</tr>
+					))}
+				</tbody>
 			</table>
 		</div>
 	);
