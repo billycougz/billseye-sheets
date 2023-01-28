@@ -36,3 +36,7 @@ h3.space {
   margin: 10px 0 0 10px !important;
   width: 95px;
 }
+
+.addNewFieldContainer {
+  margin: 1em !important;
+}

@@ -1,5 +1,7 @@
+import { Button } from '@mui/material';
 import { useState } from 'react';
 import { addNewRecord } from '../api';
+import AddRecordField from './AddRecordField';
 import Alert from './Alert';
 
 function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
@@ -52,79 +54,56 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 		setAddNewValue('');
 	};
 
+	const COMMON_FIELD_PROPS = {
+		spreadsheetId,
+		onChange: ({ field, value }) => setRecordData({ ...recordData, [field]: value }),
+		onLoadingChange,
+		onDataUpdate: onUpdate,
+	};
+
 	return (
 		<div>
-			<Alert open={hasAlert} onClose={() => setHasAlert(false)} />
 			<h1>Add Game Record</h1>
+			<AddRecordField
+				name='location'
+				tableName='locations'
+				value={recordData.location}
+				options={locations}
+				{...COMMON_FIELD_PROPS}
+			/>
+
+			<AddRecordField
+				name='gameName'
+				displayName='Game Name'
+				tableName='gameNames'
+				value={recordData.gameName}
+				options={gameNames}
+				{...COMMON_FIELD_PROPS}
+			/>
+
+			<AddRecordField
+				name='winner'
+				tableName='players'
+				value={recordData.winner}
+				options={players}
+				{...COMMON_FIELD_PROPS}
+			/>
+
+			<AddRecordField
+				name='loser'
+				tableName='players'
+				value={recordData.loser}
+				options={players}
+				{...COMMON_FIELD_PROPS}
+			/>
+
 			<div>
-				<select value={location} onChange={(e) => setRecordData({ ...recordData, location: e.target.value })}>
-					<option disabled value=''>
-						Select location
-					</option>
-					{locations.map((location) => (
-						<option key={location.name} value={location.name}>
-							{location.name}
-						</option>
-					))}
-				</select>
-				{addNewField === 'locations' && <input value={addNewValue} onChange={(e) => setAddNewValue(e.target.value)} />}
-				<button onClick={() => handleAddNewClick('locations')}>
-					{addNewField === 'locations' ? 'Submit' : 'Add new'}
-				</button>
-				{addNewField === 'locations' && <button onClick={handleAddNewCancel}>Cancel</button>}
-			</div>
-			<div>
-				<select value={gameName} onChange={(e) => setRecordData({ ...recordData, gameName: e.target.value })}>
-					<option disabled value=''>
-						Select game name
-					</option>
-					{gameNames.map((gameName) => (
-						<option key={gameName.name} value={gameName.name}>
-							{gameName.name}
-						</option>
-					))}
-				</select>
-				{addNewField === 'gameNames' && <input value={addNewValue} onChange={(e) => setAddNewValue(e.target.value)} />}
-				<button onClick={() => handleAddNewClick('gameNames')}>
-					{addNewField === 'gameNames' ? 'Submit' : 'Add new'}
-				</button>
-				{addNewField === 'gameNames' && <button onClick={handleAddNewCancel}>Cancel</button>}
-			</div>
-			<div>
-				<select value={winner} onChange={(e) => setRecordData({ ...recordData, winner: e.target.value })}>
-					<option disabled value=''>
-						Select winner
-					</option>
-					{players.map((player) => (
-						<option key={player.name} value={player.name}>
-							{player.name}
-						</option>
-					))}
-				</select>
-				{addNewField === 'winner' && <input value={addNewValue} onChange={(e) => setAddNewValue(e.target.value)} />}
-				<button onClick={() => handleAddNewClick('winner')}>{addNewField === 'winner' ? 'Submit' : 'Add new'}</button>
-				{addNewField === 'winner' && <button onClick={handleAddNewCancel}>Cancel</button>}
-			</div>
-			<div>
-				<select value={loser} onChange={(e) => setRecordData({ ...recordData, loser: e.target.value })}>
-					<option disabled value=''>
-						Select loser
-					</option>
-					{players.map((player) => (
-						<option key={player.name} value={player.name}>
-							{player.name}
-						</option>
-					))}
-				</select>
-				{addNewField === 'loser' && <input value={addNewValue} onChange={(e) => setAddNewValue(e.target.value)} />}
-				<button onClick={() => handleAddNewClick('loser')}>{addNewField === 'loser' ? 'Submit' : 'Add new'}</button>
-				{addNewField === 'loser' && <button onClick={handleAddNewCancel}>Cancel</button>}
-			</div>
-			<div>
-				<button disabled={!isComplete} onClick={handleSubmitClick}>
+				<Button variant='contained' disabled={!isComplete} onClick={handleSubmitClick}>
 					Submit
-				</button>
+				</Button>
 			</div>
+
+			<Alert open={hasAlert} onClose={() => setHasAlert(false)} />
 		</div>
 	);
 }

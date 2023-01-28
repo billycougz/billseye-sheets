@@ -55,6 +55,12 @@ function App() {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (view === 'selection') {
+			setSheetsData(null);
+		}
+	}, [view]);
+
 	const handleUpdate = (updatedData) => {
 		setSheetsData(updatedData);
 		const newView = view === 'selection' ? 'history' : view;
