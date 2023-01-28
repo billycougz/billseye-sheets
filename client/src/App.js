@@ -11,6 +11,7 @@ import Leaderboard from './components/Leaderboard';
 import Header from './components/Header';
 import Loader from './components/Loader';
 import { loginToGoogle } from './api';
+import { Button } from '@mui/material';
 
 const theme = createTheme({
 	palette: {
@@ -85,7 +86,11 @@ function App() {
 					</>
 				)}
 
-				{!loggedIn && <button onClick={loginToGoogle}>Log in to Google Sheets</button>}
+				{!loggedIn && (
+					<Button variant='contained' onClick={loginToGoogle}>
+						Log into Google Sheets
+					</Button>
+				)}
 			</Box>
 			{loggedIn && (
 				<Box className='main'>
