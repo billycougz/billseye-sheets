@@ -11,10 +11,7 @@ html, body {
 #logo {
   height: 68px;
   margin-right: 1em;
-}
-
-#logo-link {
-  height: 68px;
+  cursor: pointer;
 }
 
 .main {
@@ -25,4 +22,17 @@ html, body {
   color: #33a952;
   font-weight: bold;
   text-decoration: none;
+}
+
+h3.space {
+  margin: 2em 0 .5em 0 !important;
+}
+
+.MuiFormControl-root {
+  margin: 0 !important;
+}
+
+.inline-button {
+  margin: 10px 0 0 10px !important;
+  width: 95px;
 }

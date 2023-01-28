@@ -31,6 +31,9 @@ function Header({ onNavClick, loggedIn, sheet }) {
 
 	const handleNavClick = (selection) => {
 		switch (selection) {
+			case 'logo':
+				onNavClick('selection');
+				break;
 			case 'Game History':
 				onNavClick('history');
 				break;
@@ -59,9 +62,7 @@ function Header({ onNavClick, loggedIn, sheet }) {
 			<Container maxWidth='xl'>
 				<Toolbar disableGutters>
 					<Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
-						<a id='logo-link' href={window.location.origin}>
-							<img id='logo' src={logo} />
-						</a>
+						<img id='logo' src={logo} onClick={() => handleNavClick('logo')} />
 					</Box>
 
 					<Typography
@@ -83,9 +84,7 @@ function Header({ onNavClick, loggedIn, sheet }) {
 					</Typography>
 
 					<Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
-						<a id='logo-link' href={window.location.origin}>
-							<img id='logo' src={logo} />
-						</a>
+						<img id='logo' src={logo} onClick={() => handleNavClick('logo')} />
 					</Box>
 					<Typography
 						variant='h5'

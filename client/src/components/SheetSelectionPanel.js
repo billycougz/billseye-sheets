@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createNewDocument, loadDocument } from '../api';
 import Alert from './Alert';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Card, CardContent } from '@mui/material';
 
 function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 	const [newSheetTitle, setNewSheetTitle] = useState('');
@@ -60,37 +61,65 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 		<div>
 			<Alert open={hasAlert} onClose={() => setHasAlert(false)} />
 			<p>Create a new Sheets database to store your data or load a database previously created through Billseye.</p>
-			<h3>Create a new Sheets database</h3>
-			<input value={newSheetTitle} onChange={(e) => setNewSheetTitle(e.target.value)} placeholder='Enter a name...' />
-			<button onClick={handleCreateClick} disabled={!newSheetTitle}>
-				Create New
-			</button>
+			<Card>
+				<CardContent>
+					<h3>Create a new Sheets database</h3>
+					<TextField
+						label='Sheets Name'
+						variant='standard'
+						value={newSheetTitle}
+						onChange={(e) => setNewSheetTitle(e.target.value)}
+						sx={{ m: 1, minWidth: 250 }}
+					/>
+					<Button variant='contained' className='inline-button' onClick={handleCreateClick} disabled={!newSheetTitle}>
+						Create
+					</Button>
 
-			{!recentSheets.length ? (
-				''
-			) : (
-				<>
-					<h3>Load a recently used Sheets database</h3>
-					<select onChange={handleRecentSheetSelection}>
-						<option>Select a Sheets database</option>
-						{recentSheets.map(({ id, title }) => (
-							<option key={id} value={id}>
-								{title}
-							</option>
-						))}
-					</select>
-					<button onClick={() => handleLoadClick('recent')} disabled={!recentSheetSelection}>
-						Load Recent
-					</button>
-				</>
-			)}
+					{!recentSheets.length ? (
+						''
+					) : (
+						<>
+							<h3 className='space'>Load a recently used Sheets database</h3>
+							<FormControl variant='standard' sx={{ m: 1, minWidth: 250 }}>
+								<InputLabel>Sheets Name</InputLabel>
+								<Select label='Select a Sheets database' onChange={handleRecentSheetSelection}>
+									{recentSheets.map(({ id, title }) => (
+										<MenuItem key={id} value={id}>
+											{title}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
 
-			<h3>Load an existing Sheets database by URL</h3>
-			<input onChange={(e) => handleSheetUrlChange(e.target.value)} placeholder='Enter a Sheets URL...' />
-			<button onClick={() => handleLoadClick('existing')} disabled={!existingSheetId}>
-				Load Existing
-			</button>
-			{invalidUrl}
+							<Button
+								variant='contained'
+								className='inline-button'
+								onClick={() => handleLoadClick('recent')}
+								disabled={!recentSheetSelection}
+							>
+								Load
+							</Button>
+						</>
+					)}
+
+					<h3 className='space'>Load a Sheets database by URL</h3>
+					<TextField
+						label='Sheets URL'
+						variant='standard'
+						onChange={(e) => handleSheetUrlChange(e.target.value)}
+						sx={{ m: 1, minWidth: 250 }}
+					/>
+					<Button
+						variant='contained'
+						className='inline-button'
+						onClick={() => handleLoadClick('existing')}
+						disabled={!existingSheetId}
+					>
+						Load
+					</Button>
+					{invalidUrl}
+				</CardContent>
+			</Card>
 		</div>
 	);
 }
