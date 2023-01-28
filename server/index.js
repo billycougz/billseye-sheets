@@ -16,6 +16,9 @@ exports.handler = async (event) => {
 	try {
 		let responseData;
 		switch (event.path) {
+			case '/default/oauthconsenturl':
+				responseData = handleOAuthConsentUrl(event);
+				break;
 			case '/default/oauthcallback':
 				// This route returns directly (vs the common response) because it returns a redirect
 				return await handleOAuthCallback(event);
@@ -59,6 +62,7 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 const getDocumentData = async (doc) => {
+	handleOAuthConsentUrl();
 	const sheetNames = ['gamesPlayed', 'players', 'locations', 'gameNames'];
 	const sheetRequests = sheetNames.map((sheetName) => doc.sheetsByTitle[sheetName].getRows());
 	const sheets = await Promise.all(sheetRequests);
@@ -89,7 +93,7 @@ const handleOAuthConsentUrl = () => {
 		access_type: 'offline', // 'online' (default) or 'offline' (gets refresh_token)
 		scope: scopes,
 	});
-	res.send(url);
+	return { url };
 };
 
 // GET
@@ -108,7 +112,7 @@ const handleOAuthCallback = async (event) => {
 const handleCreate = async (event) => {
 	const tokens = JSON.parse(event.headers.authorization);
 	const doc = configureDoc({ tokens });
-	const { title } = event.body;
+	const { title } = JSON.parse(event.body);
 	await doc.createNewSpreadsheetDocument({ title });
 	await doc.sheetsByIndex[0].updateProperties({ title: 'gamesPlayed' });
 	await doc.sheetsByIndex[0].setHeaderRow(['dateAdded', 'location', 'gameName', 'winner', 'loser']);

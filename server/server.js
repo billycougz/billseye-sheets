@@ -12,7 +12,7 @@ app.listen(port, () => console.log(`App listening on port ${port}`));
 app.all('*', async (req, res) => {
 	const event = {
 		headers: req.headers,
-		body: req.body,
+		body: JSON.stringify(req.body),
 		path: req._parsedUrl.pathname,
 		queryStringParameters: req.query,
 	};
