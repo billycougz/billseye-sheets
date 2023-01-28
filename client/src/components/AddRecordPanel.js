@@ -9,8 +9,6 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 	const EMPTY_RECORD = { date: '', winner: '', loser: '', location: '', gameName: '' };
 	const { locations = [], gameNames = [], players = [] } = data;
 	const [recordData, setRecordData] = useState(EMPTY_RECORD);
-	const [addNewField, setAddNewField] = useState(null);
-	const [addNewValue, setAddNewValue] = useState('');
 	const [hasAlert, setHasAlert] = useState(false);
 	const { location, gameName, winner, loser } = recordData;
 	const isComplete = location && gameName && winner && loser;
@@ -26,32 +24,6 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 		} else {
 			setHasAlert(true);
 		}
-	};
-
-	const handleAddNewClick = async (type) => {
-		if (addNewField === type) {
-			onLoadingChange(true);
-			type = type === 'winner' || type === 'loser' ? 'players' : type;
-			const record = JSON.stringify({ name: addNewValue });
-			const data = await addNewRecord({ type, record, spreadsheetId });
-			onLoadingChange(false);
-			if (!data.error) {
-				onUpdate(data);
-				setRecordData({ ...recordData, [addNewField]: addNewValue });
-				setAddNewField(null);
-				setAddNewValue('');
-			} else {
-				setHasAlert(true);
-			}
-		} else {
-			setAddNewField(type);
-			setAddNewValue('');
-		}
-	};
-
-	const handleAddNewCancel = () => {
-		setAddNewField(null);
-		setAddNewValue('');
 	};
 
 	const COMMON_FIELD_PROPS = {

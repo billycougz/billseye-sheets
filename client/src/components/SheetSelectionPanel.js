@@ -79,7 +79,7 @@ function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
 						''
 					) : (
 						<>
-							<h3 className='space'>Load a recently used Sheets database</h3>
+							<h3 className='space'>Load a recent Sheets database</h3>
 							<FormControl variant='standard' sx={{ m: 1, minWidth: 250 }}>
 								<InputLabel>Sheets Name</InputLabel>
 								<Select label='Select a Sheets database' onChange={handleRecentSheetSelection}>
