@@ -4,6 +4,15 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 
 exports.handler = async (event) => {
 	console.log({ event });
+	if (event.httpMethod === 'OPTIONS') {
+		return {
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Headers': '*',
+			},
+			statusCode: 200,
+		};
+	}
 	try {
 		let responseData;
 		switch (event.path) {
@@ -23,12 +32,20 @@ exports.handler = async (event) => {
 				throw 'The request path was not found';
 		}
 		return {
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Headers': '*',
+			},
 			statusCode: 200,
 			body: JSON.stringify(responseData),
 		};
 	} catch (e) {
 		const errorResponseData = { error: 'There was an error', message: e };
 		return {
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Headers': '*',
+			},
 			statusCode: 500,
 			body: JSON.stringify(errorResponseData),
 		};
@@ -91,7 +108,8 @@ const handleOAuthCallback = async (event) => {
 const handleCreate = async (event) => {
 	const tokens = JSON.parse(event.headers.authorization);
 	const doc = configureDoc({ tokens });
-	await doc.createNewSpreadsheetDocument({ title: event.body.title });
+	const { title } = event.body;
+	await doc.createNewSpreadsheetDocument({ title });
 	await doc.sheetsByIndex[0].updateProperties({ title: 'gamesPlayed' });
 	await doc.sheetsByIndex[0].setHeaderRow(['dateAdded', 'location', 'gameName', 'winner', 'loser']);
 	const headerValues = ['name', 'dateAdded'];
@@ -105,11 +123,12 @@ const handleCreate = async (event) => {
 // POST
 const handleAddRecord = async (event) => {
 	const tokens = JSON.parse(event.headers.authorization);
-	const doc = configureDoc({ tokens, spreadsheetId: event.body.spreadsheetId });
+	const { record, spreadsheetId, type } = JSON.parse(event.body);
+	const doc = configureDoc({ tokens, spreadsheetId });
 	await doc.loadInfo();
-	const record = JSON.parse(event.body.record);
-	record.dateAdded = new Date().toLocaleString();
-	await doc.sheetsByTitle[event.body.type].addRow(record);
+	const updateRecord = JSON.parse(record);
+	updateRecord.dateAdded = new Date().toLocaleString();
+	await doc.sheetsByTitle[type].addRow(updateRecord);
 	const documentData = await getDocumentData(doc);
 	return documentData;
 };
