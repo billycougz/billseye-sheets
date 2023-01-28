@@ -2,66 +2,88 @@ import { useState } from 'react';
 import { createNewDocument, loadDocument } from '../api';
 
 function SheetSelectionPanel({ onUpdate, onLoadingChange }) {
-	const [title, setTitle] = useState('');
-	const [spreadsheetId, setSpreadsheetId] = useState('');
-	const [previousDatabases, setPreviousDatabases] = useState(
-		JSON.parse(localStorage.getItem('previous-databases') || '[]')
-	);
+	const [newSheetTitle, setNewSheetTitle] = useState('');
+	const [recentSheetSelection, setRecentSheetSelection] = useState('');
+	const [existingSheetId, setExistingSheetsId] = useState('');
+	const [error, setError] = useState('');
+	const [recentSheets, setRecentSheets] = useState(JSON.parse(localStorage.getItem('recent-sheets') || '[]'));
 
 	const handleCreateClick = async () => {
 		onLoadingChange(true);
-		const data = await createNewDocument(title);
+		const data = await createNewDocument(newSheetTitle);
 		onLoadingChange(false);
 		if (!data.error) {
 			onUpdate(data);
+			updateRecentSheets(data);
 		}
 	};
 
-	const handleLoadClick = async () => {
+	const handleLoadClick = async (field) => {
 		onLoadingChange(true);
+		const spreadsheetId = field === 'existing' ? existingSheetId : recentSheetSelection;
 		const data = await loadDocument(spreadsheetId);
 		onLoadingChange(false);
 		if (!data.error) {
 			onUpdate(data);
-			const databases = previousDatabases.filter(({ name, id }) => id !== spreadsheetId);
-			databases.push({ title: data.title, id: spreadsheetId });
-			localStorage.setItem('previous-databases', JSON.stringify(databases));
-			setPreviousDatabases(databases);
+			updateRecentSheets(data);
 		}
 	};
 
-	const handlePreviousDatabaseClick = (e) => {
-		setSpreadsheetId(e.target.value);
+	const handleRecentSheetSelection = (e) => {
+		setRecentSheetSelection(e.target.value);
+	};
+
+	const updateRecentSheets = (data) => {
+		const storedSheets = recentSheets.filter(({ name, id }) => id !== data.spreadsheetId);
+		storedSheets.push({ title: data.title, id: data.spreadsheetId });
+		localStorage.setItem('recent-sheets', JSON.stringify(storedSheets));
+		setRecentSheets(storedSheets);
+	};
+
+	const handleSheetUrlChange = (existingSheetUrl) => {
+		const segments = existingSheetUrl.split('/');
+		const sheetIdIndex = segments.findIndex((segment) => segment === 'd') + 1;
+		if (sheetIdIndex) {
+			setExistingSheetsId(segments[sheetIdIndex]);
+			setError('');
+		} else {
+			setExistingSheetsId('');
+			setError(existingSheetUrl ? 'This is not a valid Sheets URL' : '');
+		}
 	};
 
 	return (
 		<div>
-			<p>Create a new Sheets document to store your data or load a document previously created through Billseye.</p>
-			<h3>Create a new Sheets document</h3>
-			<input value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter a name...' />
-			<button onClick={handleCreateClick} disabled={!title}>
+			<p>Create a new Sheets database to store your data or load a database previously created through Billseye.</p>
+			<h3>Create a new Sheets database</h3>
+			<input value={newSheetTitle} onChange={(e) => setNewSheetTitle(e.target.value)} placeholder='Enter a name...' />
+			<button onClick={handleCreateClick} disabled={!newSheetTitle}>
 				Create New
 			</button>
 
-			<h3>Load a previously used Sheets document</h3>
-			<select onChange={handlePreviousDatabaseClick}>
-				<option selected={!previousDatabases}>Select previous document</option>
-				{previousDatabases.map(({ id, title }) => (
-					<option value={id}>{title}</option>
-				))}
-			</select>
-			<button onClick={handleLoadClick} disabled={!spreadsheetId}>
+			{!recentSheets.length ? (
+				''
+			) : (
+				<>
+					<h3>Load a recently used Sheets database</h3>
+					<select onChange={handleRecentSheetSelection}>
+						<option selected={!recentSheets}>Select a Sheets database</option>
+						{recentSheets.map(({ id, title }) => (
+							<option value={id}>{title}</option>
+						))}
+					</select>
+					<button onClick={() => handleLoadClick('recent')} disabled={!recentSheetSelection}>
+						Load Recent
+					</button>
+				</>
+			)}
+
+			<h3>Load an existing Sheets database by URL</h3>
+			<input onChange={(e) => handleSheetUrlChange(e.target.value)} placeholder='Enter a Sheets URL...' />
+			<button onClick={() => handleLoadClick('existing')} disabled={!existingSheetId}>
 				Load Existing
 			</button>
-			<h3>Load an existing Sheets document by ID</h3>
-			<input
-				value={spreadsheetId}
-				onChange={(e) => setSpreadsheetId(e.target.value)}
-				placeholder='Enter a document id...'
-			/>
-			<button onClick={handleLoadClick} disabled={!spreadsheetId}>
-				Load Existing
-			</button>
+			{error}
 		</div>
 	);
 }
