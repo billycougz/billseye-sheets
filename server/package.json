@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "build": "rm -rf dist && esbuild ./src/* --entry-names=[dir]/[name]/index --bundle --minify --sourcemap --platform=node --target=node16.14 --outdir=dist && zip -r -j build.zip dist/index/*"
   },
   "author": "William Cougan <william.cougan@gmail.com> (https://williamcougan.com/)",
   "license": "MIT",
@@ -16,6 +17,7 @@
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "esbuild": "^0.17.5",
     "express": "^4.18.2"
   }
 }
