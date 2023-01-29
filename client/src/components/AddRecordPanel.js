@@ -35,7 +35,6 @@ function AddRecordPanel({ data, onUpdate, onLoadingChange }) {
 
 	return (
 		<div>
-			<h1>Add Game Record</h1>
 			<AddRecordField
 				name='location'
 				tableName='locations'

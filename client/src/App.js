@@ -11,7 +11,11 @@ import Leaderboard from './components/Leaderboard';
 import Header from './components/Header';
 import Loader from './components/Loader';
 import { loginToGoogle } from './api';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const theme = createTheme({
 	palette: {
@@ -30,12 +34,18 @@ const theme = createTheme({
 	},
 });
 
-const Item = styled(Paper)(({ theme }) => ({
+const Item = styled(Accordion)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
 	...theme.typography.body2,
 	padding: theme.spacing(1),
 	textAlign: 'center',
 	color: theme.palette.text.secondary,
+	'.accordion-header': {
+		margin: 0,
+	},
+	'.MuiAccordionSummary-content': {
+		justifyContent: 'space-around',
+	},
 }));
 
 function App() {
@@ -98,16 +108,32 @@ function App() {
 					{view !== 'selection' && (
 						<Grid container spacing={2}>
 							<Grid xs={12} sm={4}>
-								<Item>
-									{view !== 'selection' && (
-										<AddRecordPanel
-											data={sheetsData}
-											onUpdate={handleUpdate}
-											onBack={() => setSheetsData(null)}
-											onLoadingChange={setIsLoading}
-										/>
-									)}
-								</Item>
+								{view !== 'selection' && (
+									<Item defaultExpanded={true}>
+										<AccordionSummary
+											expandIcon={<ExpandMoreIcon />}
+											aria-controls='panel1a-content'
+											id='panel1a-header'
+											sx={{ display: { xs: 'flex', sm: 'none' } }}
+										>
+											<h1 className='accordion-header'>Add Game Record</h1>
+										</AccordionSummary>
+										<Typography
+											className='accordion-header'
+											sx={{ justifyContent: 'center', display: { xs: 'none', sm: 'flex' } }}
+										>
+											<h1>Add Game Record</h1>
+										</Typography>
+										<AccordionDetails>
+											<AddRecordPanel
+												data={sheetsData}
+												onUpdate={handleUpdate}
+												onBack={() => setSheetsData(null)}
+												onLoadingChange={setIsLoading}
+											/>
+										</AccordionDetails>
+									</Item>
+								)}
 							</Grid>
 							<Grid xs={12} sm={8}>
 								<Item>
