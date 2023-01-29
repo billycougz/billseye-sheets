@@ -14,6 +14,18 @@ html, body {
   cursor: pointer;
 }
 
+#userEmail {
+  opacity: 1;
+  color: white;
+  background-color: #33a952;
+  margin-top: -8px;
+  margin-bottom: 5px
+}
+
+#userEmail svg {
+  margin-right: 5px;
+}
+
 .main {
   margin: 1em;
 }

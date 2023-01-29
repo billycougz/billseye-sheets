@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import logo from '../logo.png';
 import sheetsLogo from '../sheets.png';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const views = ['Game History', 'Leaderboard'];
 const sheetsOptions = ['Open Sheets', 'Logout'];
@@ -27,6 +28,34 @@ function Header({ onNavClick, loggedIn, sheet }) {
 	};
 	const handleOpenUserMenu = (event) => {
 		setAnchorElUser(event.currentTarget);
+	};
+
+	const UserEmail = () => {
+		if (!loggedIn) {
+			return null;
+		}
+		const parseJwt = (token) => {
+			const base64Url = token.split('.')[1];
+			const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+			const jsonPayload = decodeURIComponent(
+				window
+					.atob(base64)
+					.split('')
+					.map(function (c) {
+						return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+					})
+					.join('')
+			);
+			return JSON.parse(jsonPayload);
+		};
+		const { id_token } = JSON.parse(localStorage.getItem('sheets-tokens'));
+		const { email } = parseJwt(id_token);
+		return (
+			<MenuItem disabled id='userEmail'>
+				<AccountCircleIcon />
+				<Typography>{email}</Typography>
+			</MenuItem>
+		);
 	};
 
 	const handleNavClick = (selection) => {
@@ -148,6 +177,7 @@ function Header({ onNavClick, loggedIn, sheet }) {
 										display: { xs: 'block', md: 'none' },
 									}}
 								>
+									<UserEmail />
 									{sheet && (
 										<>
 											{views.map((view) => (

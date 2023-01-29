@@ -12,7 +12,7 @@ const loginToGoogle = () => {
 	const params = new URLSearchParams({
 		access_type: 'offline',
 		prompt: 'consent',
-		scope: ['https://www.googleapis.com/auth/spreadsheets'],
+		scope: ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/userinfo.email'].join(' '),
 		response_type: 'code',
 		client_id: '410398723822-o8k13cm1jf9eiduq8ce8fk890qfad23j.apps.googleusercontent.com',
 		redirect_uri: `${BASE_URL}/oauthcallback`,
