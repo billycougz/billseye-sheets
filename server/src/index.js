@@ -2,7 +2,7 @@ const { google } = require('googleapis');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
 exports.handler = async (event) => {
-	console.log({ event });
+	logEvent(event);
 	if (event.httpMethod === 'OPTIONS') {
 		return {
 			headers: {
@@ -51,6 +51,17 @@ exports.handler = async (event) => {
 			statusCode: 500,
 			body: JSON.stringify(errorResponseData),
 		};
+	}
+};
+
+const logEvent = (event) => {
+	try {
+		const parseJwt = (token) => JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+		const { id_token } = JSON.parse(event.headers.authorization);
+		const { email } = parseJwt(id_token);
+		console.log({ logName: 'event', email, ...event });
+	} catch (e) {
+		console.log({ logName: 'event', ...event });
 	}
 };
 
