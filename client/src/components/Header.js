@@ -218,6 +218,7 @@ function Header({ onNavClick, loggedIn, sheet }) {
 									open={Boolean(anchorElUser)}
 									onClose={handleNavClick}
 								>
+									<UserEmail />
 									{sheetsOptions.map((option) => (
 										<MenuItem key={option} onClick={() => handleNavClick(option)}>
 											<Typography textAlign='center'>{option}</Typography>
